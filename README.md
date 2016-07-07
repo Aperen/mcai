@@ -1,102 +1,160 @@
-Yii 2 Basic Project Template
-============================
+# "近之言与"博客网站的设计与实现（一期） #
 
-Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-rapidly creating small projects.
+# 前言 #
 
-The template contains the basic features including user login/logout and a contact page.
-It includes all commonly used configurations that would allow you to focus on adding new
-features to your application.
+还有一点点时间，还有一点点空间，为我们俩设计与实现一个有关于生活与爱情的网站。一个属于我们自己的空间，一个只有我们俩的天地，以此纪念我们美好的生活与爱情。
 
-[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-app-basic/v/stable.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-app-basic/downloads.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-basic.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-basic)
+# 设计 #
 
-DIRECTORY STRUCTURE
--------------------
+设计思路：我不是设计出身，也没有多少设计的观念和原则。在当下开放的信息环境里，但是我有幸站在了巨人的肩膀上，去眺望更远的地方。参考了很多的信息、书籍、网站，最终设计出这套看上去还算简洁的界面。
 
-      assets/             contains assets definition
-      commands/           contains console commands (controllers)
-      config/             contains application configurations
-      controllers/        contains Web controller classes
-      mail/               contains view files for e-mails
-      models/             contains model classes
-      runtime/            contains files generated during runtime
-      tests/              contains various tests for the basic application
-      vendor/             contains dependent 3rd-party packages
-      views/              contains view files for the Web application
-      web/                contains the entry script and Web resources
+## 功能设计 ##
 
 
 
-REQUIREMENTS
-------------
+## 框线图设计 ##
 
-The minimum requirement by this project template that your Web server supports PHP 5.4.0.
+### 首页（Index） ###
 
+![Index](http://i.imgur.com/dCtPZa1.jpg)
 
-INSTALLATION
-------------
+### 文章页（Article） ###
 
-### Install from an Archive File
+![Article](http://i.imgur.com/3YUhTMQ.jpg)
 
-Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
-a directory named `basic` that is directly under the Web root.
-
-Set cookie validation key in `config/web.php` file to some random secret string:
-
-```php
-'request' => [
-    // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-    'cookieValidationKey' => '<secret random string goes here>',
-],
-```
-
-You can then access the application through the following URL:
-
-~~~
-http://localhost/basic/web/
-~~~
+### 登陆页（Login） ###
 
 
-### Install via Composer
+### 注册页（Regist） ###
 
-If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
-at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
+### 关于页（About） ###
 
-You can then install this project template using the following command:
+### 联系页（Contact) ###
 
-~~~
-php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
-~~~
+### 后台管理页（Admin） ###
 
-Now you should be able to access the application through the following URL, assuming `basic` is the directory
-directly under the Web root.
+### 文章编写页（Article-Write) ###
 
-~~~
-http://localhost/basic/web/
-~~~
+### 用户管理页（User-Mange） ###
+
+## 数据库设计 ##
+
+### 文章分类表（Table for category） ###
+
+字段名|字段类型|字段长度|是否主键|唯一约束|允许为空|自增长
+-|
+ID|INT|DEFAULT|YES|YES|NO|YES|
+TITLE|VARCHAR|50|NO|YES|NO|NO|
+
+SQL语句
+
+	CREATE TABLE `category` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `title` varchar(50) NOT NULL,
+	  PRIMARY KEY (`id`),
+	  UNIQUE KEY `category_id_uindex` (`id`),
+	  UNIQUE KEY `category_title_uindex` (`title`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 
-CONFIGURATION
--------------
+### 文章表（Table for article） ###
 
-### Database
+字段名|字段类型|字段长度|是否主键|唯一约束|允许为空|自增长|默认
+-|
+id|INT|DEFAULT|YES|YES|NO|YES||
+title|VARCHAR|50|NO|NO|NO|NO||
+content|VARCHAR|10000|NO|NO|NO|NO||
+author|VARCHAR|50|NO|NO|NO|NO||
+category_id|INT|DEFAULT|NO|NO|NO|NO|-1|
+post_date|DATETIME|DEFAULT|NO|NO|NO|NO||
+update_date|DATETIME|DEFAULT|NO|NO|NO|NO||
+read_num|INT|DEFAULT|NO|NO|NO|NO|0|
+thumbnail_url|VARCHAR|255|NO|NO|YES|NO||
 
-Edit the file `config/db.php` with real data, for example:
+SQL 语句
 
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
-```
+	CREATE TABLE `article` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `title` varchar(50) NOT NULL,
+	  `content` varchar(10000) NOT NULL,
+	  `author` varchar(50) NOT NULL,
+	  `category_id` int(11) NOT NULL DEFAULT '-1',
+	  `post_date` datetime NOT NULL,
+	  `update_date` datetime NOT NULL,
+	  `read_num` int(11) NOT NULL DEFAULT '0',
+	  `thumbnail_url` varchar(255) DEFAULT NULL,
+	  PRIMARY KEY (`id`),
+	  UNIQUE KEY `table_name_id_uindex` (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
-**NOTES:**
-- Yii won't create the database for you, this has to be done manually before you can access it.
-- Check and edit the other files in the `config/` directory to customize your application as required.
-- Refer to the README in the `tests` directory for information specific to basic application tests.
+
+### 文件表(Files Table) ###
+
+
+
+	CREATE TABLE `files` (
+	  `file_id` int(11) NOT NULL AUTO_INCREMENT,
+	  `file_name` varchar(255) NOT NULL,
+	  `file_size` float DEFAULT NULL,
+	  `file_url` varchar(255) NOT NULL,
+	  `file_type` varchar(10) DEFAULT NULL,
+	  PRIMARY KEY (`file_id`),
+	  UNIQUE KEY `files_file_id_uindex` (`file_id`),
+	  UNIQUE KEY `files_file_name_uindex` (`file_name`)
+	) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8
+
+# 实现 #
+
+## 问题与解决方法 ##
+
+1. 使用数据模型传值，接收不到；
+
+	    <?= $form->field($user, 'username')->textInput() ?>
+	    <?= $form->field($user, 'password')->passwordInput() ?>
+
+	原因是传送过到的值即不是一维数组，也不是对象，而是二维数组（如图）
+
+	![Q1](http://i.imgur.com/RSMovQn.jpg)
+
+	接收的代码如下：
+
+		$v=Yii::$app->request->post();
+		echo $v['User']['username'];
+
+2. 使用 Ajax 发送 POST 请求，出现状态码 400 错误，GET请求可以。
+
+	原因是 Yii 开启了 csfr 验证，如果在 POST 请求中没有 csrf 字段就会出现这种情况。
+
+	解决方法有三（参考1），如下：
+
+	2.1 关闭 csrf 验证，但这样不安全
+
+		public function init(){
+	    $this->enableCsrfValidation = false;
+	
+		}
+	
+	2.2 在表单中添加 csrf 的隐藏域
+
+		<input name="_csrf" type="hidden" id="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
+
+	2.2 在 Ajax 中添加 csrf 数据
+
+			var csrfToken = $('meta[name="csrf-token"]').attr("content");
+			$.ajax({
+			  type: 'POST',
+			  url: url,
+			  data: {_csrf:csrfToken},
+			  success: success,
+			  dataType: dataType
+			});
+
+	最终我是把第二种方法和第三种方法结合了，因为页面中可能会没有 meta 相应标签。
+
+3. php 中的 sub_str() 函数截取中文乱码。
+
+	用 mb_substr() 函数替代。
+
+	# 总结 #
+
+# 参考 #
